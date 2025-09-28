@@ -1,16 +1,6 @@
-# React + Vite
+Task Manager Application
+A full-stack web application designed to enhance skills in .NET Web API and React with Tailwind CSS. This project allows users to create, read, update, and delete tasks and notes, providing a practical experience with RESTful APIs, state management in React, and responsive UI design. It demonstrates hands-on knowledge of connecting a React frontend with a .NET backend and handling CRUD operations efficiently.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+<img src="/Task-Manager-09-28-2025_09_40_AM.png" alt="Screenshot 1" />
+<img src="/Task-Manager-09-28-2025_09_50_AM.png" alt="Screenshot 2" />
+<img src="/Task-Manager-09-28-2025_10_00_AM.png" alt="Screenshot 3" />
