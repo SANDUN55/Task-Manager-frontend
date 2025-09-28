@@ -2,10 +2,10 @@ import {useState, useEffect} from "react";
 import TaskFilter from "../components/TaskFilter";
 import TaskList from "../components/TaskList";
 import TaskForm from "../components/TaskForm";
-import {toast} from "react-toastify";
 import axios from "axios";
+import {toast} from "react-toastify";
 
-const API_BASE = "http://localhost:44393/api";
+const API_BASE = "http://localhost:44393/api/tasks";
 
 const Tasks = () => {
 	const [tasks, setTasks] = useState([]);
@@ -22,17 +22,16 @@ const Tasks = () => {
 	const fetchTasks = async () => {
 		setLoading(true);
 		try {
-			const res = await axios.get(`${API_BASE}/tasks`);
-			const mappedTasks = res.data.map((task) => ({
-				_id: task._id || task.id,
-				title: task.Title || task.title || "Untitled",
-				description:
-					task.Description || task.description || "No description",
-				status: task.Status || task.status || "Pending",
-				deadline:
-					task.Deadline || task.deadline || new Date().toISOString(),
-			}));
-			setTasks(mappedTasks);
+			const res = await axios.get(API_BASE);
+			setTasks(
+				res.data.map((task) => ({
+					_id: task.Id || task._id,
+					title: task.Title || task.title,
+					description: task.Description || task.description,
+					status: task.Status || task.status,
+					deadline: task.Deadline || task.deadline,
+				}))
+			);
 		} catch (err) {
 			toast.error("Failed to fetch tasks");
 			console.error(err);
@@ -51,14 +50,20 @@ const Tasks = () => {
 		setIsModalOpen(false);
 	};
 
-	const handleSave = async () => {
-		await fetchTasks(); // refresh tasks
+	const handleSave = (taskData) => {
+		setTasks((prev) =>
+			editingTask
+				? prev.map((t) =>
+						t._id === editingTask._id ? {...t, ...taskData} : t
+					)
+				: [taskData, ...prev]
+		);
 		closeModal();
 	};
 
-	const handleDelete = async (_id) => {
+	const deleteTask = async (_id) => {
 		try {
-			await axios.delete(`${API_BASE}/tasks/${_id}`);
+			await axios.delete(`${API_BASE}/${_id}`);
 			setTasks((prev) => prev.filter((t) => t._id !== _id));
 			toast.success("Task deleted successfully");
 		} catch (err) {
@@ -77,19 +82,19 @@ const Tasks = () => {
 
 	return (
 		<div className="space-y-6">
-			<div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-				<h1 className="text-3xl font-bold tracking-tight">My Tasks</h1>
+			<div className="flex justify-between items-center">
+				<h1 className="text-3xl font-bold">My Tasks</h1>
 				<div className="flex gap-4">
 					<input
 						type="text"
 						placeholder="Search tasks..."
 						value={search}
 						onChange={(e) => setSearch(e.target.value)}
-						className="p-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white/50 dark:bg-gray-900/50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+						className="p-2 border rounded-lg"
 					/>
 					<button
 						onClick={() => openModal()}
-						className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-200 shadow-md hover:shadow-lg"
+						className="bg-blue-500 text-white px-4 py-2 rounded-lg"
 					>
 						Add Task
 					</button>
@@ -99,18 +104,14 @@ const Tasks = () => {
 			<TaskFilter filter={filter} setFilter={setFilter} />
 
 			{loading ? (
-				<div className="flex justify-center">
-					<div className="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full"></div>
-				</div>
+				<div>Loading...</div>
 			) : filteredTasks.length === 0 ? (
-				<p className="text-center text-gray-500 dark:text-gray-400">
-					No tasks found. Add one above!
-				</p>
+				<p>No tasks found.</p>
 			) : (
 				<TaskList
 					tasks={filteredTasks}
 					onEdit={openModal}
-					onDelete={handleDelete}
+					onDelete={deleteTask}
 				/>
 			)}
 
